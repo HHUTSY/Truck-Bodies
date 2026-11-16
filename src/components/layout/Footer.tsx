@@ -1,19 +1,11 @@
 import Link from "next/link";
-import { cacheLife } from "next/cache";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Layout";
 import { ArrowUp } from "@/components/icons";
 import { footerNav, quoteHref, site } from "@/lib/site";
 
-/** Cached so prerendering doesn't read the clock on every request. */
-async function copyrightYear() {
-  "use cache";
-  cacheLife("weeks");
-  return new Date().getFullYear();
-}
-
-export async function Footer() {
-  const year = await copyrightYear();
+export function Footer() {
+  const year = process.env.NEXT_PUBLIC_YEAR; // set at build time in next.config.ts
   const { address } = site;
 
   return (

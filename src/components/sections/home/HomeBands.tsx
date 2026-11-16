@@ -96,7 +96,7 @@ export function DealerCta() {
               <h3 className="mt-6 font-display text-display-sm">Find a dealer near you</h3>
               <p className="mt-3 max-w-md text-muted">Search by ZIP code or state to find the closest SH Truck Bodies distributor.</p>
             </div>
-            <form action="/where-to-buy" method="get" className="relative mt-10 flex gap-2" role="search">
+            <form action={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/where-to-buy/`} method="get" className="relative mt-10 flex gap-2" role="search">
               <label htmlFor="dealer-q" className="sr-only">
                 ZIP code or state
               </label>

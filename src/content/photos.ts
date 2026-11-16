@@ -15,7 +15,10 @@ export type PhotoMeta = {
   blur: string;
 };
 
-const byId = new Map<string, PhotoMeta>((manifest as PhotoMeta[]).map((p) => [p.id, p]));
+// Static hosting under a sub-path (GitHub Pages): unoptimized images are not auto-prefixed.
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+const photos = (manifest as PhotoMeta[]).map((p) => ({ ...p, src: BASE + p.src }));
+const byId = new Map<string, PhotoMeta>(photos.map((p) => [p.id, p]));
 
 export function photo(id: string): PhotoMeta {
   const p = byId.get(id);
@@ -23,4 +26,4 @@ export function photo(id: string): PhotoMeta {
   return p;
 }
 
-export const allPhotos = manifest as PhotoMeta[];
+export const allPhotos = photos;

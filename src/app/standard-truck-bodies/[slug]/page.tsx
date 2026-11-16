@@ -21,11 +21,6 @@ import { quoteHref } from "@/lib/site";
 
 const d = (ms: number) => ({ "--d": `${ms}ms` }) as CSSProperties;
 
-/* Fully prerendered via generateStaticParams. Deliberately "blocking" (no Suspense
-   around params): the shared-element morph needs the hero to render in the same
-   commit as the navigation. Product links use prefetch={true}, so it is instant in prod. */
-export const instant = false;
-
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
 }

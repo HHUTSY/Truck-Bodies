@@ -1,0 +1,692 @@
+/* =====================================================================
+   COMPONENT + MOTION STYLES
+   Imported into the cascade layer `components` (see globals.css), so any
+   Tailwind utility on the same element (hidden, w-full, min-h-*) wins.
+   ===================================================================== */
+
+/* ---------- Components (global, class-based for server components) ---------- */
+
+/* Skip link */
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 200;
+  transform: translateY(-200%);
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Film grain — static SVG noise, composited once */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Fixed column grid lines (the "technical drawing" frame) */
+.site-columns {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+.site-columns > div {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.site-columns span {
+  border-left: 1px solid rgb(236 238 240 / 0.035);
+}
+.site-columns span:nth-child(4) {
+  border-right: 1px solid rgb(236 238 240 / 0.035);
+}
+@media (min-width: 64rem) {
+  .site-columns > div {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  .site-columns span:nth-child(4) {
+    border-right: 0;
+  }
+  .site-columns span:last-child {
+    border-right: 1px solid rgb(236 238 240 / 0.035);
+  }
+}
+
+/* Animated underline for nav & inline links */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.3em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 600ms var(--ease-out-expo);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after,
+.link-underline[aria-current="page"]::after,
+.link-underline[aria-expanded="true"]::after {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  white-space: nowrap;
+  user-select: none;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: color 450ms var(--ease-out-expo);
+}
+.btn-plate {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  clip-path: polygon(
+    var(--cut) 0,
+    100% 0,
+    100% calc(100% - var(--cut)),
+    calc(100% - var(--cut)) 100%,
+    0 100%,
+    0 var(--cut)
+  );
+}
+.btn-plate::before,
+.btn-plate::after {
+  content: "";
+  position: absolute;
+}
+/* Hover fill that rises from the bottom (transform only) */
+.btn-plate::after {
+  inset: 0;
+  transform: translate3d(0, 101%, 0);
+  transition: transform 600ms var(--ease-out-expo);
+}
+.btn:hover .btn-plate::after,
+.btn:focus-visible .btn-plate::after {
+  transform: translate3d(0, 0, 0);
+}
+
+.btn-primary {
+  color: var(--accent-ink);
+}
+.btn-primary .btn-plate {
+  background: var(--accent);
+}
+.btn-primary .btn-plate::after {
+  background: var(--steel-100);
+}
+
+.btn-secondary {
+  color: var(--fg);
+}
+.btn-secondary .btn-plate {
+  background: var(--line-strong);
+}
+.btn-secondary .btn-plate::before {
+  inset: 1px;
+  background: var(--bg);
+  clip-path: inherit;
+}
+.btn-secondary .btn-plate::after {
+  background: var(--fg);
+}
+.btn-secondary:hover,
+.btn-secondary:focus-visible {
+  color: var(--bg);
+}
+
+.btn-ghost {
+  color: var(--fg);
+}
+
+/* Arrow swap */
+.btn-icon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  overflow: hidden;
+  width: 1.1em;
+  height: 1.1em;
+}
+.btn-icon > * {
+  grid-area: 1 / 1;
+  transition: transform 600ms var(--ease-out-expo);
+}
+.btn-icon > *:last-child {
+  transform: translate3d(-120%, 120%, 0);
+}
+.btn:hover .btn-icon > *:first-child,
+.btn:focus-visible .btn-icon > *:first-child {
+  transform: translate3d(120%, -120%, 0);
+}
+.btn:hover .btn-icon > *:last-child,
+.btn:focus-visible .btn-icon > *:last-child {
+  transform: translate3d(0, 0, 0);
+}
+
+/* ---------- Form controls ---------- */
+.field-control {
+  width: 100%;
+  min-height: 3.25rem;
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  border: 1px solid var(--line-strong);
+  color: var(--fg);
+  padding: 0.85rem 1rem;
+  font-size: 1rem; /* 16px — prevents iOS zoom */
+  transition:
+    border-color 250ms ease,
+    background-color 250ms ease,
+    box-shadow 250ms ease;
+}
+.field-control::placeholder {
+  color: var(--fg-faint);
+}
+.field-control:hover {
+  border-color: rgb(236 238 240 / 0.32);
+}
+.field-control:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.field-control[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+select.field-control {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg-muted) 50%),
+    linear-gradient(135deg, var(--fg-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.3rem) 50%,
+    calc(100% - 0.95rem) 50%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  padding-right: 2.75rem;
+}
+
+/* ---------- Custom cursor ---------- */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none;
+}
+html.has-cursor :is(input, textarea, select, [contenteditable="true"]) {
+  cursor: auto;
+}
+html.has-cursor iframe {
+  cursor: auto;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+.cursor-dot > span {
+  position: absolute;
+  left: -3px;
+  top: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #fff;
+  mix-blend-mode: difference;
+  transition:
+    opacity 200ms ease,
+    scale 300ms var(--ease-out-expo);
+}
+.cursor-ring .ring {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  mix-blend-mode: difference;
+  transition:
+    scale 500ms var(--ease-out-expo),
+    background-color 300ms ease,
+    border-color 300ms ease,
+    opacity 300ms ease;
+}
+.cursor-ring .label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  translate: -50% -50%;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  opacity: 0;
+  scale: 0.6;
+  transition:
+    opacity 250ms ease,
+    scale 500ms var(--ease-out-expo);
+  white-space: nowrap;
+}
+.cursor-ring[data-state="link"] .ring {
+  scale: 1.45;
+  background: rgb(255 255 255 / 0.12);
+}
+.cursor-ring[data-state="view"] .ring,
+.cursor-ring[data-state="drag"] .ring {
+  scale: 2.2;
+  background: var(--accent);
+  border-color: var(--accent);
+  mix-blend-mode: normal;
+}
+.cursor-ring[data-state="view"] .label,
+.cursor-ring[data-state="drag"] .label {
+  opacity: 1;
+  scale: 1;
+}
+.cursor-ring[data-state="view"] ~ .cursor-dot > span,
+.cursor-ring[data-state="drag"] ~ .cursor-dot > span,
+.cursor-ring[data-state="hidden"] ~ .cursor-dot > span {
+  opacity: 0;
+}
+.cursor-ring[data-state="hidden"] .ring {
+  opacity: 0;
+  scale: 0.4;
+}
+.cursor-layer[data-visible="false"] {
+  opacity: 0;
+}
+
+/* ---------- Mobile action bar ---------- */
+.mobile-cta {
+  transition: translate 500ms var(--ease-out-expo);
+}
+html[data-menu-open="true"] .mobile-cta {
+  translate: 0 110%;
+}
+
+/* ---------- Product card glow (pointer-tracked via CSS vars) ---------- */
+.card-glow {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgb(255 91 20 / 0.16),
+    transparent 60%
+  );
+}
+.group\/card:hover .card-glow {
+  opacity: 1;
+}
+
+/* ---------- Lenis ---------- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* =====================================================================
+   5. MOTION
+   ===================================================================== */
+
+/* Scroll reveal — driven by one shared IntersectionObserver (RevealObserver).
+   Only hides content when JS is present (.js on <html>). */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 2rem, 0);
+}
+.js [data-reveal="fade"] {
+  transform: none;
+}
+.js [data-reveal="scale"] {
+  transform: scale(0.96);
+}
+
+
+/* Split text — per-word masks, staggered */
+.split-line {
+  display: block;
+}
+.split-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* room for descenders under tight line-heights */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.split-inner {
+  display: inline-block;
+  will-change: transform;
+}
+.js [data-split="view"] .split-inner {
+  transform: translate3d(0, 110%, 0) rotate(4deg);
+  transform-origin: 0% 100%;
+}
+/* Load-triggered (above the fold): pure CSS, starts on first paint — LCP-safe */
+[data-split="load"] .split-inner {
+  animation: split-rise 1300ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i) * var(--stagger, 70ms) + var(--d, 120ms));
+}
+@keyframes split-rise {
+  from {
+    transform: translate3d(0, 110%, 0) rotate(4deg);
+    transform-origin: 0% 100%;
+  }
+  to {
+    transform: none;
+  }
+}
+
+/* Gradient-filled words inside split text (applied per word so masks still work) */
+.words-signal .split-inner {
+  background-image: linear-gradient(172deg, #ffb48f 0%, #ff5b14 52%, #d9420a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-right: 0.04em;
+}
+.words-metal .split-inner {
+  background-image: linear-gradient(176deg, #ffffff 8%, #c9ced4 42%, #8b939c 72%, #d7dbe0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Generic load-in for hero furniture */
+.load-in {
+  animation: load-in 1100ms var(--ease-out-expo) both;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes load-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.25rem, 0);
+  }
+}
+
+/* Blueprint "plotter" wipe */
+.plot-in {
+  animation: plot-in 1800ms var(--ease-in-out-quint) both;
+  animation-delay: var(--d, 300ms);
+}
+@keyframes plot-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+.plot-scan {
+  animation: plot-scan 1800ms var(--ease-in-out-quint) both;
+  animation-delay: var(--d, 300ms);
+}
+@keyframes plot-scan {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(var(--scan-w, 100%), 0, 0);
+    opacity: 0;
+  }
+}
+
+/* Showcase progress bar — drives auto-advance via animationend */
+.progress-fill {
+  transform-origin: left center;
+  animation: progress-fill var(--progress-dur, 4200ms) linear both;
+}
+@keyframes progress-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Marquee */
+.marquee:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* ---------- View transitions (React <ViewTransition>) ---------- */
+::view-transition {
+  pointer-events: none;
+}
+/* Shared-element morph: product card → product hero */
+::view-transition-group(.morph) {
+  animation-duration: 650ms;
+  animation-timing-function: var(--ease-out-expo);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  35% {
+    filter: blur(4px);
+  }
+}
+/* Page enter / exit */
+::view-transition-old(.page-out) {
+  animation: 260ms var(--ease-out-quart) both page-fade-out;
+}
+::view-transition-new(.page-in) {
+  animation: 620ms var(--ease-out-expo) 120ms both page-fade-in;
+}
+@keyframes page-fade-out {
+  to {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0);
+    filter: blur(4px);
+  }
+}
+@keyframes page-fade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+}
+/* Anchor persistent chrome so it never slides with content */
+::view-transition-group(site-header),
+::view-transition-group(cursor),
+::view-transition-group(mobile-cta) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header),
+::view-transition-old(mobile-cta) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(mobile-cta) {
+  animation: none;
+}
+
+/* ---------- Reduced motion & low-power ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+  .js [data-reveal],
+  .js [data-split="view"] .split-inner,
+  [data-split="load"] .split-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 0s !important;
+  }
+}
+/* "lite" tier (touch / low-power): shorter, simpler motion */
+html[data-motion="lite"] {
+  --dur-reveal: 800ms;
+}
+
+
+/* ---------- Leaflet (dealer locator) — dark, on-brand ---------- */
+.leaflet-container {
+  background: var(--bg-elevated);
+  font-family: var(--font-sans);
+  color: var(--fg);
+}
+.leaflet-container a {
+  color: var(--accent-text);
+}
+.leaflet-bar,
+.leaflet-bar a {
+  background: var(--surface) !important;
+  color: var(--fg) !important;
+  border-color: var(--line-strong) !important;
+  border-radius: 0 !important;
+}
+.leaflet-bar a {
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+}
+.leaflet-control-attribution {
+  background: rgb(10 11 13 / 0.75) !important;
+  color: var(--fg-muted) !important;
+  font-size: 10px;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip,
+.leaflet-tooltip {
+  background: var(--surface);
+  color: var(--fg);
+  border-radius: 0;
+  box-shadow: var(--shadow-lift);
+  border: 1px solid var(--line-strong);
+}
+.leaflet-popup-content {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.dealer-pin span {
+  display: block;
+  width: 28px;
+  height: 34px;
+  background: var(--accent);
+  clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+  box-shadow: inset 0 0 0 9px var(--accent);
+  transition: transform 300ms var(--ease-out-expo);
+}
+.dealer-pin span::after {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 9px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent-ink);
+}
+.dealer-pin:hover span {
+  transform: translateY(-3px);
+}
+.dealer-cluster {
+  display: grid;
+  place-items: center;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.8rem;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  box-shadow: 0 0 0 6px rgb(236 238 240 / 0.15);
+}
+.hq-pin {
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  border: 2px solid var(--accent);
+  color: var(--accent-text);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: -0.04em;
+}
+
+/* ---------- Print (spec sheets) ---------- */
+@media print {
+  @page {
+    size: letter;
+    margin: 0.45in;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #0a0b0d !important;
+  }
+  body {
+    padding: 0 !important;
+  }
+  #top,
+  #site-footer,
+  .mobile-cta,
+  .grain,
+  .site-columns,
+  .cursor-layer,
+  .skip-link {
+    display: none !important;
+  }
+}
+
+/* OSM raster tiles → graphite map (only when no custom dark tile provider is set) */
+.tiles-dark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.92) contrast(0.88) saturate(0.25);
+}

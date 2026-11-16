@@ -257,8 +257,11 @@ html.has-cursor iframe {
   width: 6px;
   height: 6px;
   border-radius: 999px;
-  background: #fff;
-  mix-blend-mode: difference;
+  /* Accent fill + dark inner / light outer outline = visible on white, black and photos */
+  background: var(--signal-500);
+  box-shadow:
+    0 0 0 1.5px #0a0b0d,
+    0 0 0 3px rgb(255 255 255 / 0.95);
   transition:
     opacity 200ms ease,
     scale 300ms var(--ease-out-expo);
@@ -270,8 +273,10 @@ html.has-cursor iframe {
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 0.55);
-  mix-blend-mode: difference;
+  border: 2px solid var(--signal-500);
+  box-shadow:
+    0 0 0 1.5px #0a0b0d,
+    inset 0 0 0 1.5px rgb(255 255 255 / 0.9);
   transition:
     scale 500ms var(--ease-out-expo),
     background-color 300ms ease,
@@ -297,14 +302,16 @@ html.has-cursor iframe {
 }
 .cursor-ring[data-state="link"] .ring {
   scale: 1.45;
-  background: rgb(255 255 255 / 0.12);
+  background: rgb(255 91 20 / 0.18);
 }
 .cursor-ring[data-state="view"] .ring,
 .cursor-ring[data-state="drag"] .ring {
   scale: 2.2;
   background: var(--accent);
   border-color: var(--accent);
-  mix-blend-mode: normal;
+  box-shadow:
+    0 0 0 1.5px #0a0b0d,
+    inset 0 0 0 1.5px rgb(255 255 255 / 0.9);
 }
 .cursor-ring[data-state="view"] .label,
 .cursor-ring[data-state="drag"] .label {
